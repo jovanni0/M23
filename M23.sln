@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "M23.Simulator", "M23.Simulator\M23.Simulator.csproj", "{F118A026-D42E-472B-978B-80F605AE875B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "M23.Shared", "M23.Shared\M23.Shared.csproj", "{38650D92-6161-4466-9651-67B1E320B8DE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "M23.Controller", "M23.Controller\M23.Controller.csproj", "{79D21908-4B2F-45B4-A206-6F86FC1D625A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F118A026-D42E-472B-978B-80F605AE875B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F118A026-D42E-472B-978B-80F605AE875B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F118A026-D42E-472B-978B-80F605AE875B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F118A026-D42E-472B-978B-80F605AE875B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38650D92-6161-4466-9651-67B1E320B8DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38650D92-6161-4466-9651-67B1E320B8DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38650D92-6161-4466-9651-67B1E320B8DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38650D92-6161-4466-9651-67B1E320B8DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79D21908-4B2F-45B4-A206-6F86FC1D625A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79D21908-4B2F-45B4-A206-6F86FC1D625A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79D21908-4B2F-45B4-A206-6F86FC1D625A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79D21908-4B2F-45B4-A206-6F86FC1D625A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
