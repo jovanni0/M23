@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "M23.Shared", "M23.Shared\M2
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "M23.Controller", "M23.Controller\M23.Controller.csproj", "{79D21908-4B2F-45B4-A206-6F86FC1D625A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "M23.Tests", "M23.Tests\M23.Tests.csproj", "{07F02C16-0533-49A2-BA17-BC797A7F6C31}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{79D21908-4B2F-45B4-A206-6F86FC1D625A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{79D21908-4B2F-45B4-A206-6F86FC1D625A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{79D21908-4B2F-45B4-A206-6F86FC1D625A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07F02C16-0533-49A2-BA17-BC797A7F6C31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07F02C16-0533-49A2-BA17-BC797A7F6C31}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07F02C16-0533-49A2-BA17-BC797A7F6C31}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07F02C16-0533-49A2-BA17-BC797A7F6C31}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
