@@ -12,8 +12,9 @@ builder.Services.AddDbContextFactory<AppDbContext>(options =>
 
 builder.Services.AddSingleton<ProcessState>();
 builder.Services.AddSingleton<WebSocketHub>();
-builder.Services.AddHostedService<SimulatorClient>();
 builder.Services.AddSingleton<SimulatorClient>();
+builder.Services.AddHostedService(sp => sp.GetRequiredService<SimulatorClient>());
+builder.Services.AddScoped<ReportService>();
 
 var app = builder.Build();
 
@@ -25,5 +26,21 @@ using (var scope = app.Services.CreateScope())
 
 app.UseWebSockets();
 app.UseMiddleware<WebSocketMiddleware>();
+
+app.MapGet("/reports/events", async (
+    ReportService reports,
+    DateTime? from,
+    DateTime? to,
+    string? source) =>
+{
+    var events = await reports.GetEventsAsync(from, to, source);
+    return Results.Ok(events);
+});
+
+app.MapGet("/reports/faults", async (ReportService reports) =>
+{
+    var periods = await reports.GetFaultPeriodsAsync();
+    return Results.Ok(periods);
+});
 
 app.Run();

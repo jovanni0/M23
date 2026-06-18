@@ -17,6 +17,8 @@ public class SimulatorClient : BackgroundService
     private readonly IDbContextFactory<AppDbContext> _dbFactory;
     private readonly IConfiguration _config;
     private readonly ILogger<SimulatorClient> _logger;
+    private NetworkStream? _activeStream;
+    private readonly SemaphoreSlim _streamLock = new(1, 1);
 
     
     public SimulatorClient(
@@ -47,6 +49,10 @@ public class SimulatorClient : BackgroundService
                 await client.ConnectAsync(host, port, stoppingToken);
                 _logger.LogInformation("Connected to simulator at {Host}:{Port}", host, port);
 
+                await _streamLock.WaitAsync(stoppingToken);
+                _activeStream = client.GetStream();
+                _streamLock.Release();
+
                 await ReadLoopAsync(client, stoppingToken);
             }
             catch (OperationCanceledException)
@@ -56,6 +62,11 @@ public class SimulatorClient : BackgroundService
             catch (Exception ex)
             {
                 _logger.LogWarning("Simulator connection lost: {Message}. Retrying in 3s.", ex.Message);
+
+                await _streamLock.WaitAsync(stoppingToken);
+                _activeStream = null;
+                _streamLock.Release();
+
                 await Task.Delay(3000, stoppingToken);
             }
         }
@@ -75,8 +86,6 @@ public class SimulatorClient : BackgroundService
 
             var chunk = leftover + Encoding.UTF8.GetString(buffer, 0, bytesRead);
             var lines = chunk.Split('\n');
-
-            // last element may be incomplete — carry it over
             leftover = lines[^1];
 
             foreach (var line in lines[..^1])
@@ -85,6 +94,10 @@ public class SimulatorClient : BackgroundService
                 await HandleMessageAsync(line);
             }
         }
+
+        await _streamLock.WaitAsync();
+        _activeStream = null;
+        _streamLock.Release();
     }
 
     
@@ -147,6 +160,21 @@ public class SimulatorClient : BackgroundService
     
     public async Task SendCommandAsync(string json)
     {
-        
+        await _streamLock.WaitAsync();
+        try
+        {
+            if (_activeStream == null)
+            {
+                _logger.LogWarning("Cannot send command: not connected to simulator.");
+                return;
+            }
+
+            var bytes = Encoding.UTF8.GetBytes(json + "\n");
+            await _activeStream.WriteAsync(bytes);
+        }
+        finally
+        {
+            _streamLock.Release();
+        }
     }
 }
