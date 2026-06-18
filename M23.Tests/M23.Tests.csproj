@@ -19,6 +19,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\M23.Controller\M23.Controller.csproj" />
       <ProjectReference Include="..\M23.Simulator\M23.Simulator.csproj" />
     </ItemGroup>
 
