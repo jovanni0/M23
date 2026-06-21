@@ -15,8 +15,14 @@ builder.Services.AddSingleton<WebSocketHub>();
 builder.Services.AddSingleton<SimulatorClient>();
 builder.Services.AddHostedService(sp => sp.GetRequiredService<SimulatorClient>());
 builder.Services.AddScoped<ReportService>();
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+        policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+});
 
 var app = builder.Build();
+app.UseCors();
 
 using (var scope = app.Services.CreateScope())
 {
