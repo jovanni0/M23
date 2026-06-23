@@ -1,7 +1,7 @@
 <script lang="ts">
     import { connection } from '$lib/stores/connection.svelte';
 
-    let url = $state('ws://localhost:5001/ws');
+    let url = $state('ws://localhost:5265/ws');
 
     function handleConnect() {
         connection.connect(url);
@@ -16,7 +16,7 @@
             type="text"
             bind:value={url}
             class="flex-1 border border-gray-200 rounded px-2 py-1 text-sm font-mono"
-            placeholder="ws://localhost:5001/ws"
+            placeholder="ws://localhost:5265/ws"
     />
     <button
             onclick={handleConnect}
