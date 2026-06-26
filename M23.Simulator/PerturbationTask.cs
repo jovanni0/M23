@@ -11,6 +11,8 @@ public class PerturbationTask
     private readonly int _minDelaySeconds;
     private readonly int _maxDelaySeconds;
 
+    public bool Enabled { get; set; } = true;
+
     
     public PerturbationTask(
         ProcessOrchestrator orchestrator,
@@ -31,6 +33,9 @@ public class PerturbationTask
             await Task.Delay(TimeSpan.FromSeconds(delay), cancellationToken);
 
             if (cancellationToken.IsCancellationRequested) break;
+
+            if (!Enabled)
+                continue;
 
             if (_orchestrator.System.State == SystemState.Normal)
             {

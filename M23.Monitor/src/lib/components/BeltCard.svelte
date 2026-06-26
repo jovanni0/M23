@@ -35,7 +35,9 @@
     </div>
     <button
             onclick={toggle}
-            class="text-xs px-2.5 py-1 border border-gray-300 rounded hover:bg-gray-50"
+            disabled={connection.state.system === 'Fault'}
+            class="text-xs px-2.5 py-1 border border-gray-300 rounded hover:bg-gray-50
+            disabled:opacity-40 disabled:cursor-not-allowed"
     >
         {state === 'Stopped' ? 'Start' : 'Stop'}
     </button>

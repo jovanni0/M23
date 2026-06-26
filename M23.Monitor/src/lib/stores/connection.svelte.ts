@@ -21,6 +21,8 @@ function createConnection() {
     let state = $state<ProcessState>({ ...DEFAULT_STATE });
     let status = $state<ConnectionStatus>('disconnected');
     let events = $state<{ source: string; from: string; to: string; timestamp: Date }[]>([]);
+    let alarmTimer: ReturnType<typeof setTimeout> | null = null;
+    let perturbationEnabled = $state<boolean>(true);
 
     function connect(url: string) {
         if (socket) socket.close();
@@ -77,11 +79,34 @@ function createConnection() {
 
             case 'system_state':
                 state = { ...state, system: message.payload.state };
+                if (message.payload.state === 'Fault') {
+                    state = { ...state, alarmActive: true };
+                    if (alarmTimer) clearTimeout(alarmTimer);
+                    alarmTimer = setTimeout(() => {
+                        state = { ...state, alarmActive: false };
+                        alarmTimer = null;
+                    }, 5000);
+                } else {
+                    if (alarmTimer) {
+                        clearTimeout(alarmTimer);
+                        alarmTimer = null;
+                    }
+                    state = { ...state, alarmActive: false };
+                }
                 break;
 
             case 'alarm':
                 state = { ...state, alarmActive: message.payload.active };
                 break;
+        }
+
+        // Track perturbation toggle events
+        if (message.type !== 'sync') {
+            const src = getEventSource(message);
+            const to = getEventTo(message);
+            if (src === 'PERTURBATION') {
+                perturbationEnabled = to === 'Enabled';
+            }
         }
 
         if (message.type !== 'sync') {
@@ -150,6 +175,11 @@ function createConnection() {
         sendCommand({ target: 'FLAP', action: 'fault' });
     }
 
+    function togglePerturbation() {
+        perturbationEnabled = !perturbationEnabled;
+        sendCommand({ target: 'PERTURBATION', action: 'toggle_perturbation' });
+    }
+
     function restart() {
         sendCommand({ target: 'SYSTEM', action: 'restart' });
     }
@@ -165,6 +195,7 @@ function createConnection() {
         get state() { return state; },
         get status() { return status; },
         get events() { return events; },
+        get perturbationEnabled() { return perturbationEnabled; },
         connect,
         disconnect,
         startBelt,
@@ -173,6 +204,7 @@ function createConnection() {
         pressS5,
         setFlap,
         triggerFault,
+        togglePerturbation,
         restart
     };
 }

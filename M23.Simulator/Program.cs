@@ -1,10 +1,11 @@
-﻿using M23.Simulator;
+using M23.Simulator;
 
 
 
 var orchestrator = new ProcessOrchestrator();
 var server = new TcpServer(orchestrator);
 var perturbation = new PerturbationTask(orchestrator);
+server.SetPerturbationTask(perturbation);
 
 orchestrator.EventOccurred += e =>
     Console.WriteLine($"[{e.Timestamp:HH:mm:ss}] {e.Source}: {e.From} → {e.To}");
