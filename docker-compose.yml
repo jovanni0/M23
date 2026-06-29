@@ -1,0 +1,49 @@
+services:
+  m23-db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: m23-mssql
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=YourStr0ng!Passw0rd
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql-data:/var/opt/mssql
+
+  m23-simulator:
+    build:
+      context: .
+      dockerfile: M23.Simulator/Dockerfile
+    container_name: m23-simulator
+    ports:
+      - "5005:5000"
+    depends_on:
+      - m23-db
+
+  m23-controller:
+    build:
+      context: .
+      dockerfile: M23.Controller/Dockerfile
+    container_name: m23-controller
+    ports:
+      - "5265:8080" # Mapăm portul 8080 din container pe portul expus 5265
+    environment:
+      - ConnectionStrings__Default=Server=m23-db,1433;Database=M23;User Id=sa;Password=YourStr0ng!Passw0rd;TrustServerCertificate=True
+      - Simulator__Host=m23-simulator
+      - Simulator__Port=5000
+    depends_on:
+      - m23-db
+      - m23-simulator
+
+  m23-monitor:
+    build:
+      context: .
+      dockerfile: M23.Monitor/Dockerfile
+    container_name: m23-monitor
+    ports:
+      - "5173:5173"
+    depends_on:
+      - m23-controller
+
+volumes:
+  mssql-data:
