@@ -12,6 +12,12 @@
 
     const sources = ['', 'M1', 'M2', 'M3', 'M4', 'FLAP', 'SYSTEM', 'ALARM'];
 
+    const filteredLiveEvents = $derived(
+        sourceFilter
+            ? connection.events.filter(e => e.source === sourceFilter)
+            : connection.events
+    );
+
     async function loadEvents() {
         loading = true;
         error = null;
@@ -56,11 +62,11 @@
         </div>
     </div>
 
-    {#if connection.events.length > 0}
+    {#if filteredLiveEvents.length > 0}
         <div>
             <p class="text-xs text-gray-500 mb-1.5">Live (this session)</p>
             <div class="bg-white border border-gray-200 rounded-lg divide-y divide-gray-100">
-                {#each connection.events as event}
+                {#each filteredLiveEvents as event}
                     <div class="px-3 py-2 flex items-center justify-between text-sm">
                         <span class="font-medium text-gray-900">{event.source}</span>
                         <span class="text-gray-500">→ {event.to}</span>

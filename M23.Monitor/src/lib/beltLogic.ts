@@ -2,7 +2,7 @@ import type { InputBeltState, OutputBeltState, FlapPosition } from '$lib/types';
 
 
 
-export function ledState(state: InputBeltState | OutputBeltState): 'stopped' | 'ready' | 'running' {
+export function ledState(state: InputBeltState | OutputBeltState): 'stopped' | 'ready' | 'running' | 'fault' {
     if (state === 'Running') return 'running';
     if (state === 'Ready') return 'ready';
     return 'stopped';
