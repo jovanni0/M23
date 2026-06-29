@@ -111,8 +111,37 @@ public class ProcessOrchestrator
         if (Flap.Position == FlapPosition.Fault) 
             return;
 
-        EvaluateBelt(M1, M2);
-        EvaluateBelt(M2, M1);
+        // Pass 1: demote belts that can no longer run (Running → Ready)
+        DemoteBeltIfNeeded(M1, M2);
+        DemoteBeltIfNeeded(M2, M1);
+
+        // Pass 2: promote belts that now meet conditions (Ready → Running)
+        PromoteBeltIfReady(M1, M2);
+        PromoteBeltIfReady(M2, M1);
+    }
+
+
+    private void DemoteBeltIfNeeded(InputBeltFSM belt, InputBeltFSM other)
+    {
+        if (belt.State != BeltState.Running) return;
+
+        bool canRun = ConditionEvaluator.CanRun(
+            belt.Name, Flap.Position, M3.State, M4.State, other.State);
+
+        if (!canRun)
+            belt.ConditionLost();
+    }
+
+
+    private void PromoteBeltIfReady(InputBeltFSM belt, InputBeltFSM other)
+    {
+        if (belt.State != BeltState.Ready) return;
+
+        bool canRun = ConditionEvaluator.CanRun(
+            belt.Name, Flap.Position, M3.State, M4.State, other.State);
+
+        if (canRun)
+            belt.ConditionMet();
     }
 
     

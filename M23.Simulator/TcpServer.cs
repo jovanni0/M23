@@ -17,12 +17,18 @@ public class TcpServer
     private readonly List<TcpClient> _clients = new();
     private readonly object _lock = new();
     private TcpListener? _listener;
+    private PerturbationTask? _perturbation;
 
     
     public TcpServer(ProcessOrchestrator orchestrator)
     {
         _orchestrator = orchestrator;
         _orchestrator.EventOccurred += OnEventOccurred;
+    }
+
+    public void SetPerturbationTask(PerturbationTask task)
+    {
+        _perturbation = task;
     }
 
     
@@ -121,6 +127,17 @@ public class TcpServer
                 break;
             case "restart":
                 _orchestrator.Restart();
+                break;
+            case "toggle_perturbation":
+                if (_perturbation != null)
+                {
+                    _perturbation.Enabled = !_perturbation.Enabled;
+                    Console.WriteLine($"[Perturbation] {(_perturbation.Enabled ? "Enabled" : "Disabled")}");
+                    var msg = SimulatorMessage.CreateEvent("PERTURBATION", 
+                        _perturbation.Enabled ? "Disabled" : "Enabled",
+                        _perturbation.Enabled ? "Enabled" : "Disabled");
+                    BroadcastAsync(msg).GetAwaiter().GetResult();
+                }
                 break;
         }
     }
