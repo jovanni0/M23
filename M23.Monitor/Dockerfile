@@ -1,15 +1,19 @@
 FROM node:20-alpine AS build
+
 WORKDIR /app
 COPY M23.Monitor/package*.json ./
-RUN npm ci
-COPY M23.Monitor/ ./
+RUN npm install
+
+COPY M23.Monitor/ .
+
+ARG VITE_CONTROLLER_HTTP_URL
+ARG VITE_CONTROLLER_WS_URL
+ENV VITE_CONTROLLER_HTTP_URL=$VITE_CONTROLLER_HTTP_URL
+ENV VITE_CONTROLLER_WS_URL=$VITE_CONTROLLER_WS_URL
+
 RUN npm run build
 
-FROM node:20-alpine AS final
-WORKDIR /app
-COPY --from=build /app ./
-EXPOSE 5173
-# Rulăm direct serverul de dev cu --host, sau adaptorul de producție dacă e configurat. 
-# Pentru simplitate în testare, rămânem pe varianta dev accesibilă global:
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
-
+FROM nginx:alpine
+COPY --from=build /app/build /usr/share/nginx/html
+COPY M23.Monitor/nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80

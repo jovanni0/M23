@@ -26,7 +26,7 @@ services:
       dockerfile: M23.Controller/Dockerfile
     container_name: m23-controller
     ports:
-      - "5265:8080" # Mapăm portul 8080 din container pe portul expus 5265
+      - "5265:8080"
     environment:
       - ConnectionStrings__Default=Server=m23-db,1433;Database=M23;User Id=sa;Password=YourStr0ng!Passw0rd;TrustServerCertificate=True
       - Simulator__Host=m23-simulator
@@ -39,6 +39,9 @@ services:
     build:
       context: .
       dockerfile: M23.Monitor/Dockerfile
+      args:
+        - VITE_CONTROLLER_HTTP_URL=http://m23.cmnu.io:5265
+        - VITE_CONTROLLER_WS_URL=ws://m23.cmnu.io:5265/ws
     container_name: m23-monitor
     ports:
       - "5173:5173"
