@@ -40,8 +40,8 @@ services:
       context: .
       dockerfile: M23.Monitor/Dockerfile
       args:
-        - VITE_CONTROLLER_HTTP_URL=http://localhost:5265
-        - VITE_CONTROLLER_WS_URL=ws://localhost:5265/ws
+        - VITE_CONTROLLER_HTTP_URL=${VITE_CONTROLLER_HTTP_URL}
+        - VITE_CONTROLLER_WS_URL=${VITE_CONTROLLER_WS_URL}
     container_name: m23-monitor
     ports:
       - "5173:80"
